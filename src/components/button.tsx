@@ -1,15 +1,16 @@
-import React from "react";
+interface ButtonProps {
+  label: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  className?: string;
+  type?: "submit" | "reset" | "button";
+}
 
 export default function Button({
   label,
   onClick,
   className,
-}: {
-  label: string;
-  color?: string;
-  className?: string;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-}) {
+  type = "button",
+}: ButtonProps) {
   return (
     <button
       style={{
@@ -24,6 +25,7 @@ export default function Button({
         fontSize: 16,
       }}
       className={className}
+      type={type}
       onClick={onClick}
     >
       {label}
