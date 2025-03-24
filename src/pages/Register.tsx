@@ -1,6 +1,6 @@
 import axios from "axios";
 import CustomInput from "../components/custominput";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { useActionState, useEffect } from "react";
 import Button from "../components/Button";
 
@@ -23,13 +23,15 @@ const RegisterAction = async (_previousData: unknown, formData: FormData) => {
 };
 export default function Register() {
   const [data, submitAction, isLoading] = useActionState(RegisterAction, {});
+  const navigate = useNavigate();
   console.log(data);
 
   useEffect(() => {
     if (data && data?.token) {
       localStorage.setItem("token", data.token);
+      navigate("/");
     }
-  }, [data]);
+  }, [data, navigate]);
   return (
     <div className=" register ">
       <div className="flex flex-col    w-90 bg-white p-4 rounded shadow-md">

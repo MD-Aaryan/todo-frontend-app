@@ -1,6 +1,6 @@
 import axios from "axios";
 import CustomInput from "../components/custominput";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { useActionState, useEffect } from "react";
 import Button from "../components/Button";
 
@@ -23,13 +23,15 @@ const loginAction = async (_previousData: unknown, formData: FormData) => {
 };
 export default function Login() {
   const [data, submitAction, isLoading] = useActionState(loginAction, null);
+  const navigate = useNavigate();
   console.log(data);
 
   useEffect(() => {
     if (data && data?.tokan) {
       localStorage.setItem("token", data.tokan);
+      navigate("/");
     }
-  }, [data]);
+  }, [data, navigate]);
   return (
     <div className=" login ">
       <div className="flex flex-col w-90 bg-white p-4 rounded shadow-2xl opacity-90 ">
