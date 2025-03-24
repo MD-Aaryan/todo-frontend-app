@@ -1,3 +1,5 @@
+import { Pencil, Trash2 } from "lucide-react";
+
 interface CardProps {
   title: string;
   description: string;
@@ -24,12 +26,8 @@ export default function Card({
       <div className="card-title flex justify-between items-center">
         <h3>{title}</h3>
         <div className="flex gap-2">
-          <button className="cursor-pointer" onClick={handleEdit}>
-            Edit
-          </button>
-          <button className="cursor-pointer" onClick={handleDelete}>
-            Delete
-          </button>
+          <Pencil strokeWidth={1} onClick={handleEdit} />
+          <Trash2 strokeWidth={0.75} onClick={handleDelete} className="mx-2" />
         </div>
       </div>
       <p className="card-desc">{description}</p>
