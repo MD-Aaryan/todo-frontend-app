@@ -1,10 +1,11 @@
-import { Todo } from "../App";
+import { Todo } from "../pages/TodoApp";
 import Card from "./card";
 
 interface TodoCardsProps {
   todos: Todo[];
   setTodos: (todo: Todo[]) => void;
   setSelectedTodo: (todo: Todo | null) => void;
+  selectedTodo: Todo | null;
 }
 
 export default function TodoCards(props: TodoCardsProps) {
@@ -35,6 +36,7 @@ export default function TodoCards(props: TodoCardsProps) {
           handleDelete={() => handleDelete(index)}
           title={todo.title}
           description={todo.description}
+          isSelected={props.selectedTodo?.index === index}
         />
       ))}
     </div>

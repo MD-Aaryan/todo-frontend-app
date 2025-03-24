@@ -1,4 +1,4 @@
-interface CustomInputProps {
+interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   type?: string;
 }
@@ -6,6 +6,7 @@ interface CustomInputProps {
 export default function CustomInput({
   label,
   type = "text",
+  ...rest
 }: CustomInputProps) {
   return (
     <div
@@ -18,8 +19,7 @@ export default function CustomInput({
       <input
         placeholder={label}
         className="px-2 py-1 outline rounded"
-        style={{}}
-        name="input"
+        name={rest.name}
         type={type}
       />
     </div>

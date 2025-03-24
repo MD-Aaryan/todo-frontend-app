@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import Button from "./button";
-import { Todo } from "../App";
+import Button from "./Button";
+import { Todo } from "../pages/TodoApp";
 
 interface TodoFormProps {
   todos: Todo[];
