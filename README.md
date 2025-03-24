@@ -1,3 +1,20 @@
+# TODO APP
+
+## Topics cover in this code with link
+
+1. Setup with Vite - [Link](https://tailwindcss.com/docs/installation/using-vite)
+2. Components
+3. Props - [Link](https://react.dev/learn/passing-props-to-a-component)
+4. Tailwind Setup - [Link](https://tailwindcss.com/docs/installation/using-vite)
+5. State Management - [Link](https://react.dev/learn/managing-state)
+6. LocalStorage for data persistence - [Link](https://www.freecodecamp.org/news/use-local-storage-in-modern-applications/)
+   - To store certain data locally such as access token
+7. React Router - [Link](https://reactrouter.com/start/declarative/installation)
+   - To navigate between different pages in the app
+8. Icons - [Link](https://lucide.dev/guide/packages/lucide-react)
+9. Axios - [Link](https://axios-http.com/docs/intro)
+10. useActionState - [Link](https://react.dev/reference/react/useActionState)
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -24,31 +41,31 @@ export default tseslint.config({
   languageOptions: {
     // other options...
     parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
       tsconfigRootDir: import.meta.dirname,
     },
   },
-})
+});
 ```
 
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
 ```js
 // eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+import reactX from "eslint-plugin-react-x";
+import reactDom from "eslint-plugin-react-dom";
 
 export default tseslint.config({
   plugins: {
     // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
+    "react-x": reactX,
+    "react-dom": reactDom,
   },
   rules: {
     // other rules...
     // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
+    ...reactX.configs["recommended-typescript"].rules,
     ...reactDom.configs.recommended.rules,
   },
-})
+});
 ```
