@@ -1,8 +1,14 @@
 import axios from "axios";
 import CustomInput from "../components/custominput";
 import { NavLink, useNavigate } from "react-router";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Button from "../components/Button";
+import { CircleAlert } from "lucide-react";
+
+interface State {
+  tokan?: string | null;
+  error?: string | null;
+}
 
 const RegisterAction = async (_previousData: unknown, formData: FormData) => {
   try {
@@ -15,32 +21,53 @@ const RegisterAction = async (_previousData: unknown, formData: FormData) => {
       },
       data: payload,
     });
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    return error;
+    return { tokan: response.data.token };
+  } catch (error: any) {
+    return {
+      error: error?.response?.data?.message || "something went wrong",
+    };
   }
 };
 export default function Register() {
-  const [data, submitAction, isLoading] = useActionState(RegisterAction, {});
+  const [data, submitAction, isLoading] = useActionState<State, FormData>(
+    RegisterAction,
+    {
+      tokan: null,
+      error: null,
+    }
+  );
+  const [Error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  console.log(data);
 
   useEffect(() => {
-    if (data && data?.token) {
-      localStorage.setItem("token", data.token);
+    if (data?.tokan) {
+      localStorage.setItem("token", data.tokan);
       navigate("/");
+    }
+    if (data.error) {
+      setError(data.error);
     }
   }, [data, navigate]);
   return (
     <div className=" register ">
       <div className="flex flex-col    w-90 bg-white p-4 rounded shadow-md">
         <h1 className="text-lg font-bold text-center ">Register</h1>
+        {Error ? (
+          <div className="w-full flex items-center gap-2 border border-red-500 p-2 rounded-md">
+            <CircleAlert size={16} color="red" />
+            <p className="text-red-400">{Error}</p>
+          </div>
+        ) : null}
         <form action={submitAction} className="flex flex-col p-4 w-full gap-2">
-          <CustomInput name="name" label="Name" type="text" />
-          <CustomInput name="email" label="Email" type="email" />
-          <CustomInput name="mobile" label="Phone" type="tel" />
-          <CustomInput name="password" label="Password" type="password" />
+          <CustomInput required name="name" label="Name" type="text" />
+          <CustomInput required name="email" label="Email" type="email" />
+          <CustomInput required name="mobile" label="Phone" type="tel" />
+          <CustomInput
+            required
+            name="password"
+            label="Password"
+            type="password"
+          />
           <p className="text-red-400"></p>
           <Button
             type="submit"

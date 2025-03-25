@@ -25,7 +25,7 @@ export default function Card({
     >
       <div className="card-title flex justify-between items-center">
         <h3>{title}</h3>
-        <div className="flex gap-2">
+        <div className="flex gap-2 ">
           <Pencil strokeWidth={1} onClick={handleEdit} />
           <Trash2 strokeWidth={0.75} onClick={handleDelete} className="mx-2" />
         </div>

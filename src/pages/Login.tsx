@@ -1,10 +1,21 @@
 import axios from "axios";
 import CustomInput from "../components/custominput";
 import { NavLink, useNavigate } from "react-router";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Button from "../components/Button";
+import { CircleAlert } from "lucide-react";
 
-const loginAction = async (_previousData: unknown, formData: FormData) => {
+// Updated interface: Changed "tokan" to "token"
+interface State {
+  tokan?: string | null;
+  error?: string | null;
+}
+
+// Updated function return type to match the interface
+const loginAction = async (
+  _previousData: unknown,
+  formData: FormData
+): Promise<State> => {
   try {
     const fde = formData.entries();
     const payload = Object.fromEntries(fde);
@@ -15,30 +26,51 @@ const loginAction = async (_previousData: unknown, formData: FormData) => {
       },
       data: payload,
     });
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    return error;
+
+    // Changed "tokan" to "token" here as well
+    return { tokan: response.data.tokan };
+  } catch (error: any) {
+    return {
+      error: error?.response?.data?.message || "Something went wrong",
+    };
   }
 };
+
 export default function Login() {
-  const [data, submitAction, isLoading] = useActionState(loginAction, null);
+  // Updated "tokan" to "token" in useActionState
+  const [data, submitAction, isLoading] = useActionState<State, FormData>(
+    loginAction,
+    {
+      tokan: null,
+      error: null,
+    }
+  );
+  const [Error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  console.log(data);
 
   useEffect(() => {
-    if (data && data?.tokan) {
+    if (data?.tokan) {
+      // Changed "tokan" to "token" here
       localStorage.setItem("token", data.tokan);
       navigate("/");
     }
+    if (data.error) {
+      setError(data.error);
+    }
   }, [data, navigate]);
+
   return (
-    <div className=" login ">
-      <div className="flex flex-col w-90 bg-white p-4 rounded shadow-2xl opacity-90 ">
+    <div className="login">
+      <div className="flex flex-col w-90 bg-white p-4 rounded shadow-2xl opacity-90">
         <h1 className="text-lg font-bold text-center">Login</h1>
+        {Error ? (
+          <div className="w-full flex items-center gap-2 border border-red-500 p-2 rounded-md">
+            <CircleAlert size={16} color="red" />
+            <p className="text-red-400">{Error}</p>
+          </div>
+        ) : null}
         <form action={submitAction} className="flex flex-col p-4 w-full gap-2">
-          {/* <CustomInput label="Mobilenumber" type="tel" /> */}
-          <CustomInput name="username" label="phone or email" type="text" />
+          <CustomInput name="username" label="Phone or Email" type="text" />
           <CustomInput name="password" label="Password" type="password" />
           <Button
             label={isLoading ? "Logging in..." : "Login"}
@@ -56,4 +88,3 @@ export default function Login() {
     </div>
   );
 }
-// if we need to go one page to another page we need to use react router
