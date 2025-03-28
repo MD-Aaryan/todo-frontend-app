@@ -6,7 +6,7 @@ import Button from "../components/Button";
 import { CircleAlert } from "lucide-react";
 
 interface State {
-  tokan?: string | null;
+  token?: string | null;
   error?: string | null;
 }
 
@@ -21,7 +21,7 @@ const RegisterAction = async (_previousData: unknown, formData: FormData) => {
       },
       data: payload,
     });
-    return { tokan: response.data.token };
+    return { token: response.data.token };
   } catch (error: any) {
     return {
       error: error?.response?.data?.message || "something went wrong",
@@ -29,10 +29,11 @@ const RegisterAction = async (_previousData: unknown, formData: FormData) => {
   }
 };
 export default function Register() {
+  const token = localStorage.getItem("token") || null;
   const [data, submitAction, isLoading] = useActionState<State, FormData>(
     RegisterAction,
     {
-      tokan: null,
+      token: token,
       error: null,
     }
   );
@@ -40,8 +41,8 @@ export default function Register() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (data?.tokan) {
-      localStorage.setItem("token", data.tokan);
+    if (data?.token) {
+      localStorage.setItem("token", data.token);
       navigate("/");
     }
     if (data.error) {

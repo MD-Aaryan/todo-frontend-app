@@ -5,9 +5,8 @@ import { useActionState, useEffect, useState } from "react";
 import Button from "../components/Button";
 import { CircleAlert } from "lucide-react";
 
-// Updated interface: Changed "tokan" to "token"
 interface State {
-  tokan?: string | null;
+  token?: string | null;
   error?: string | null;
 }
 
@@ -27,8 +26,7 @@ const loginAction = async (
       data: payload,
     });
 
-    // Changed "tokan" to "token" here as well
-    return { tokan: response.data.tokan };
+    return { token: response.data.token };
   } catch (error: any) {
     return {
       error: error?.response?.data?.message || "Something went wrong",
@@ -37,11 +35,11 @@ const loginAction = async (
 };
 
 export default function Login() {
-  // Updated "tokan" to "token" in useActionState
+  const token = localStorage.getItem("token") || null;
   const [data, submitAction, isLoading] = useActionState<State, FormData>(
     loginAction,
     {
-      tokan: null,
+      token: token,
       error: null,
     }
   );
@@ -49,9 +47,8 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (data?.tokan) {
-      // Changed "tokan" to "token" here
-      localStorage.setItem("token", data.tokan);
+    if (data?.token) {
+      localStorage.setItem("token", data.token);
       navigate("/");
     }
     if (data.error) {

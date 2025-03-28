@@ -1,22 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TodoCards from "../components/Todocard";
 import TodoForm from "../components/Todoform";
+import axios from "axios";
 
 export interface Todo {
   title: string;
   description: string;
+  id: number;
+  status: boolean;
   index?: number;
 }
 
 function TodoApp() {
-  // get todos from localStorage
-  const todosFromLocalStorage = localStorage.getItem("todos");
-  // if todosFromLocalStorage is null, set initialTodos to an empty array
-  const initialTodos = todosFromLocalStorage
-    ? JSON.parse(todosFromLocalStorage) // JSON.parse converts string to JS object
-    : [];
-  const [todos, setTodos] = useState<Todo[]>(initialTodos);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
+
+  const fetchTodos = async () => {
+    try {
+      const response = await axios("http://localhost:3000/todos", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setTodos(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchTodos();
+  }, []);
 
   return (
     <div className="flex flex-col w-screen h-screen items-center gap-8 p-4">

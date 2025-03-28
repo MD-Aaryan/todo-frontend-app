@@ -7,6 +7,7 @@ interface CardProps {
   handleDelete: () => void;
   handleEdit: () => void;
   isSelected?: boolean;
+  onclick?: () => void;
 }
 
 export default function Card({

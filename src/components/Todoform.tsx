@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Button from "./Button";
 import { Todo } from "../pages/TodoApp";
+import axios from "axios";
 
 interface TodoFormProps {
   todos: Todo[];
@@ -18,33 +19,78 @@ export default function TodoForm({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleAdd = (event: React.FormEvent<HTMLFormElement>) => {
+  // const handleAdd = (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   console.log("Add button clicked");
+  //   const newTodo = {
+  //     title,
+  //     description,
+  //   };
+  //   const updatedTodos = [...todos, newTodo];
+  //   // save to localStorage
+  //   localStorage.setItem("todos", JSON.stringify(updatedTodos)); // JSON.stringify converts JS object to string
+  //   setTodos(updatedTodos);
+  //   handleClear();
+  // };
+
+  const handleCreateTodo = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Add button clicked");
-    const newTodo = {
-      title,
-      description,
-    };
-    const updatedTodos = [...todos, newTodo];
-    // save to localStorage
-    localStorage.setItem("todos", JSON.stringify(updatedTodos)); // JSON.stringify converts JS object to string
-    setTodos(updatedTodos);
-    handleClear();
+    console.log("Create todo button clicked");
+    try {
+      const response = await axios("http://localhost:3000/todos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        data: {
+          title,
+          description,
+        },
+      });
+      console.log(response.data);
+      setTodos([...todos, response.data]);
+      localStorage.setItem("todos", JSON.stringify([...todos, response.data]));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleUpdate = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdateTodo = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!selectedTodo) return;
-    const updatedTodos = [...todos];
-    // replace updated value with the selectedTodo's value in the updatedTodos array
-    updatedTodos[selectedTodo.index!] = {
-      title,
-      description,
-    };
-    setTodos(updatedTodos);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
-    handleClear();
+
+    try {
+      await axios(`http://localhost:3000/todos/${selectedTodo.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        data: {
+          title,
+          description,
+        },
+      });
+
+      const updatedTodos = todos.map((todo) => {
+        if (todo.id === selectedTodo.id) {
+          return {
+            ...todo,
+            title,
+            description,
+          };
+        }
+        return todo;
+      });
+      setTodos(updatedTodos);
+      handleClear();
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  // TODO: handle update
 
   const handleClear = () => {
     setTitle("");
@@ -69,7 +115,7 @@ export default function TodoForm({
   return (
     <form
       onSubmit={(event) =>
-        selectedTodo ? handleUpdate(event) : handleAdd(event)
+        selectedTodo ? handleUpdateTodo(event) : handleCreateTodo(event)
       }
       className="w-[800px] items-center"
     >
